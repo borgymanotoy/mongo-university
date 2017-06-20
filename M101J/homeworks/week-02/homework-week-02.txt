@@ -1,0 +1,152 @@
+----------------
+#HW 2.1
+
+Answer: 2805
+----------------
+
+
+
+----------------
+#HW 2.2
+# Sample Data Set
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb577"), "student_id" : 0, "type" : "exam", "score" : 54.6535436362647 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb578"), "student_id" : 0, "type" : "quiz", "score" : 31.95004496742112 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb579"), "student_id" : 0, "type" : "homework", "score" : 14.8504576811645 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57a"), "student_id" : 0, "type" : "homework", "score" : 63.98402553675503 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57b"), "student_id" : 1, "type" : "exam", "score" : 74.20010837299897 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57c"), "student_id" : 1, "type" : "quiz", "score" : 96.76851542258362 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57d"), "student_id" : 1, "type" : "homework", "score" : 21.33260810416115 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57e"), "student_id" : 1, "type" : "homework", "score" : 44.31667452616328 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57f"), "student_id" : 2, "type" : "exam", "score" : 19.88180838833524 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb580"), "student_id" : 2, "type" : "quiz", "score" : 1.528220212203968 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb581"), "student_id" : 2, "type" : "homework", "score" : 60.9750047106029 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb582"), "student_id" : 2, "type" : "homework", "score" : 97.75889721343528 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb583"), "student_id" : 3, "type" : "exam", "score" : 92.6244233936537 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb584"), "student_id" : 3, "type" : "quiz", "score" : 82.59760859306996 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb585"), "student_id" : 3, "type" : "homework", "score" : 50.81577033538815 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb586"), "student_id" : 3, "type" : "homework", "score" : 92.71871597581605 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb587"), "student_id" : 4, "type" : "exam", "score" : 87.89071881934647 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb588"), "student_id" : 4, "type" : "quiz", "score" : 27.29006335059361 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb589"), "student_id" : 4, "type" : "homework", "score" : 5.244452510818443 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb58a"), "student_id" : 4, "type" : "homework", "score" : 28.656451042441 }
+
+# Now it's your turn to analyze the data set. Find all exam scores greater than or equal to 65, and sort those scores from lowest to highest.
+
+db.grades.find(
+    {
+        "type":"exam",
+        "score": { $gte : 65}
+    }
+).sort({"score":1})
+
+Question: What is the student_id of the lowest exam score above 65?
+Answer: 22
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb5cf"), "student_id" : 22, "type" : "exam", "score" : 65.02518811936324 }
+----------------
+
+
+
+
+
+----------------
+#HW 2.3
+Write a program in the language of your choice that will remove the grade of type "homework" with the lowest score for each student from the dataset in the handout. Since each document is one grade, it should remove one document per student. This will use the same data set as the last problem, but if you don't have it, you can download and re-import.
+
+#Datasets
+
+> db.grades.find().sort({"student_id":1,"type":1, "score":1})
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb577"), "student_id" : 0, "type" : "exam", "score" : 54.6535436362647 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb579"), "student_id" : 0, "type" : "homework", "score" : 14.8504576811645 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57a"), "student_id" : 0, "type" : "homework", "score" : 63.98402553675503 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb578"), "student_id" : 0, "type" : "quiz", "score" : 31.95004496742112 }
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57b"), "student_id" : 1, "type" : "exam", "score" : 74.20010837299897 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57d"), "student_id" : 1, "type" : "homework", "score" : 21.33260810416115 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57e"), "student_id" : 1, "type" : "homework", "score" : 44.31667452616328 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57c"), "student_id" : 1, "type" : "quiz", "score" : 96.76851542258362 }
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb57f"), "student_id" : 2, "type" : "exam", "score" : 19.88180838833524 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb581"), "student_id" : 2, "type" : "homework", "score" : 60.9750047106029 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb582"), "student_id" : 2, "type" : "homework", "score" : 97.75889721343528 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb580"), "student_id" : 2, "type" : "quiz", "score" : 1.528220212203968 }
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb583"), "student_id" : 3, "type" : "exam", "score" : 92.6244233936537 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb585"), "student_id" : 3, "type" : "homework", "score" : 50.81577033538815 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb586"), "student_id" : 3, "type" : "homework", "score" : 92.71871597581605 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb584"), "student_id" : 3, "type" : "quiz", "score" : 82.59760859306996 }
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb587"), "student_id" : 4, "type" : "exam", "score" : 87.89071881934647 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb589"), "student_id" : 4, "type" : "homework", "score" : 5.244452510818443 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb58a"), "student_id" : 4, "type" : "homework", "score" : 28.656451042441 }
+{ "_id" : ObjectId("50906d7fa3c412bb040eb588"), "student_id" : 4, "type" : "quiz", "score" : 27.29006335059361 }
+
+
+
+
+[STUDENT-ID]: 0 [DELETE-SCORE]: 14.8504576811645
+[STUDENT-ID]: 1 [DELETE-SCORE]: 21.33260810416115
+[STUDENT-ID]: 2 [DELETE-SCORE]: 60.9750047106029
+[STUDENT-ID]: 3 [DELETE-SCORE]: 50.81577033538815
+[STUDENT-ID]: 4 [DELETE-SCORE]: 5.244452510818443
+[STUDENT-ID]: 5 [DELETE-SCORE]: 23.29430953857654
+[STUDENT-ID]: 6 [DELETE-SCORE]: 81.23822046161325
+[STUDENT-ID]: 7 [DELETE-SCORE]: 63.35102050393443
+[STUDENT-ID]: 8 [DELETE-SCORE]: 66.42784200049636
+[STUDENT-ID]: 9 [DELETE-SCORE]: 16.60130789148128
+...
+
+> db.grades.find().sort( { 'score' : -1 } ).skip( 100 ).limit( 1 )
+
+{ "_id" : ObjectId("50906d7fa3c412bb040eb709"), "student_id" : 100, "type" : "homework", "score" : 88.50425479139126 }
+
+
+
+
+> db.grades.find( { }, { 'student_id' : 1, 'type' : 1, 'score' : 1, '_id' : 0 } ).sort( { 'student_id' : 1, 'score' : 1 } ).limit( 5 )
+
+{ "student_id" : 0, "type" : "quiz", "score" : 31.95004496742112 }
+{ "student_id" : 0, "type" : "exam", "score" : 54.6535436362647 }
+{ "student_id" : 0, "type" : "homework", "score" : 63.98402553675503 }
+{ "student_id" : 1, "type" : "homework", "score" : 44.31667452616328 }
+{ "student_id" : 1, "type" : "exam", "score" : 74.20010837299897 }
+
+
+
+
+> db.grades.aggregate( { '$group' : { '_id' : '$student_id', 'average' : { $avg : '$score' } } }, { '$sort' : { 'average' : -1 } }, { '$limit' : 1 } )
+
+{ "_id" : 54, "average" : 96.19488173037341 }
+
+
+Question: Enter the student ID below. Please enter just the number, with no spaces, commas or other characters.
+Answer:54
+
+----------------
+
+
+
+
+----------------
+#HW 2.5
+Which of the choices below is the title of a movie from the year 2013 that is rated PG-13 and won no awards? Please query the video.movieDetails collection to find the answer.
+db.movieDetails.find({"year":2013, "rated": "PG-13", "awards.wins":0}, {"title":1, "awards":1})
+
+> db.movieDetails.find({"year":2013, "rated": "PG-13", "awards.wins":0}, {"title":1, "awards":1})
+{ "_id" : ObjectId("5692a3e124de1e0ce2dfda22"), "title" : "A Decade of Decadence, Pt. 2: Legacy of Dreams", "awards" : { "wins" : 0, "nominations" : 0, "text" : "" } }
+
+Answer: "A Decade of Decadence, Pt. 2: Legacy of Dreams"
+----------------
+
+
+
+
+----------------
+#HW 2.6
+Using the video.movieDetails collection, how many movies list "Sweden" second in the the list of countries.
+db.movieDetails.find({"countries.1":"Sweden"}).count()
+
+Answer: 6
+----------------
