@@ -1,0 +1,15 @@
+{
+    "name": "hw_1_4",
+    "version": "0.1.0",
+    "description": "M101JS: Homework 1.4 - Add Movie (Create)",
+    "main": "app.js",
+    "dependencies": {
+        "body-parser": "~1.17.2",
+        "consolidate": "~0.14.5",
+        "express": "~4.15.4",
+        "mongodb": "~2.2.31",
+        "nunjucks": "~3.0.1",
+        "req-flash": "0.0.3"
+    },
+    "author": "Borgy Manotoy"
+}

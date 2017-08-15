@@ -1,0 +1,227 @@
+#HW 5.1
+
+Finding the most frequent author of comments on your blog
+In this assignment you will use the aggregation framework to find the most frequent author of comments on your blog. We will be using a data set similar to ones we've used before.
+Start by downloading the handout zip file for this problem. Then import into your blog database as follows:
+
+mongoimport --drop -d blog -c posts posts.json
+
+Now use the aggregation framework to calculate the author with the greatest number of comments.
+To help you verify your work before submitting, the author with the fewest comments is Mariela Sherer and she commented 387 times.
+Please choose your answer below for the most prolific comment author:
+
+
+(Test)
+
+db.posts.aggregate(
+    [
+        {$unwind:"$comments"},
+        {$group:{_id:{"author":"$comments.author"}, comment_count:{$sum:1}}},
+        {$sort:{comment_count:1}},
+        {$limit:1}
+    ]
+)
+
+{ "_id" : { "author" : "Mariela Sherer" }, "comment_count" : 387 }
+
+
+
+(Answer)
+
+db.posts.aggregate(
+    [
+        {$unwind:"$comments"},
+        {$group:{_id:{"author":"$comments.author"}, comment_count:{$sum:1}}},
+        {$sort:{comment_count:-1}},
+        {$limit:1}
+    ]
+)
+
+> { "_id" : { "author" : "Elizabet Kleine" }, "comment_count" : 503 }
+
+
+
+
+
+#HW 5.2 - Crunching the Zipcode dataset
+
+Please calculate the average population of cities in California (abbreviation CA) and New York (NY) (taken together) with populations over 25,000.
+For this problem, assume that a city name that appears in more than one state represents two separate cities.
+Please round the answer to a whole number.
+Hint: The answer for CT and NJ (using this data set) is 38177.
+Please note:
+
+    Different states might have the same city name.
+    A city might have multiple zip codes.
+
+> db.zips.find()
+{ "_id" : "92278", "city" : "TWENTYNINE PALMS", "loc" : [ -116.06041, 34.237969 ], "pop" : 11412, "state" : "CA" }
+{ "_id" : "93254", "city" : "NEW CUYAMA", "loc" : [ -119.823806, 34.996709 ], "pop" : 80, "state" : "CA" }
+{ "_id" : "06705", "city" : "WATERBURY", "loc" : [ -72.996268, 41.550328 ], "pop" : 25128, "state" : "CT" }
+{ "_id" : "07840", "city" : "HACKETTSTOWN", "loc" : [ -74.834315, 40.852891 ], "pop" : 23440, "state" : "NJ" }
+{ "_id" : "08536", "city" : "PLAINSBORO", "loc" : [ -74.568836, 40.332432 ], "pop" : 13008, "state" : "NJ" }
+{ "_id" : "06117", "city" : "W HARTFORD", "loc" : [ -72.745689, 41.790021 ], "pop" : 14774, "state" : "CT" }
+{ "_id" : "06071", "city" : "SOMERS", "loc" : [ -72.458266, 41.997813 ], "pop" : 9685, "state" : "CT" }
+{ "_id" : "92070", "city" : "SANTA YSABEL", "loc" : [ -116.69635, 33.147579 ], "pop" : 1263, "state" : "CA" }
+{ "_id" : "91941", "city" : "LA MESA", "loc" : [ -117.011541, 32.760431 ], "pop" : 42536, "state" : "CA" }
+{ "_id" : "07750", "city" : "MONMOUTH BEACH", "loc" : [ -73.98089, 40.333032 ], "pop" : 3329, "state" : "NJ" }
+{ "_id" : "06095", "city" : "WINDSOR", "loc" : [ -72.663893, 41.856122 ], "pop" : 27815, "state" : "CT" }
+{ "_id" : "06349", "city" : "GROTON", "loc" : [ -72.090058, 41.397648 ], "pop" : 5398, "state" : "CT" }
+{ "_id" : "13833", "city" : "SANITARIA SPRING", "loc" : [ -75.790978, 42.195735 ], "pop" : 4777, "state" : "NY" }
+{ "_id" : "06702", "city" : "WATERBURY", "loc" : [ -73.038545, 41.556568 ], "pop" : 4522, "state" : "CT" }
+{ "_id" : "95363", "city" : "PATTERSON", "loc" : [ -121.140732, 37.490592 ], "pop" : 13437, "state" : "CA" }
+{ "_id" : "11590", "city" : "WESTBURY", "loc" : [ -73.57226, 40.755749 ], "pop" : 38026, "state" : "NY" }
+{ "_id" : "07071", "city" : "LYNDHURST", "loc" : [ -74.12453, 40.809433 ], "pop" : 18423, "state" : "NJ" }
+{ "_id" : "08608", "city" : "TRENTON", "loc" : [ -74.762237, 40.220437 ], "pop" : 827, "state" : "NJ" }
+{ "_id" : "06119", "city" : "W HARTFORD", "loc" : [ -72.726799, 41.762765 ], "pop" : 15066, "state" : "CT" }
+{ "_id" : "95673", "city" : "RIO LINDA", "loc" : [ -121.445152, 38.689311 ], "pop" : 12756, "state" : "CA" }
+
+
+(Test)
+db.zips.aggregate(
+    [
+        {$match:{$or:[{state:'CT'}, {state:'NJ'}]}},
+        {$group:{_id:{state:"$state", city:"$city"}, pop:{$sum:"$pop"}}},
+        {$match:{pop:{ $gt:25000}}},
+        {$group:{_id:null,avg:{$avg:"$pop"}}}
+    ]
+);
+
+(Answer)
+db.zips.aggregate(
+    [
+        {$match:{$or:[{state:'CA'}, {state:'NY'}]}},
+        {$group:{_id:{state:"$state", city:"$city"}, pop:{$sum:"$pop"}}},
+        {$match:{pop:{ $gt:25000}}},
+        {$group:{_id:null,avg:{$avg:"$pop"}}}
+    ]
+);
+
+
+
+
+
+#HW 5.3
+
+Who's the easiest grader on campus?
+Download the handout and mongoimport.
+The documents look like this:
+
+{
+    "_id" : ObjectId("50b59cd75bed76f46522c392"),
+    "student_id" : 10,
+    "class_id" : 5,
+    "scores" : [
+        {
+            "type" : "exam",
+            "score" : 69.17634380939022
+        },
+        {
+            "type" : "quiz",
+            "score" : 61.20182926719762
+        },
+        {
+            "type" : "homework",
+            "score" : 73.3293624199466
+        },
+        {
+            "type" : "homework",
+            "score" : 15.206314042622903
+        },
+        {
+            "type" : "homework",
+            "score" : 36.75297723087603
+        },
+        {
+            "type" : "homework",
+            "score" : 64.42913107330241
+        }
+    ]
+}
+
+There are documents for each student (student_id) across a variety of classes (class_id). Note that not all students in the same class have the same exact number of assessments. Some students have three homework assignments, etc.
+Your task is to calculate the class with the best average student performance. This involves calculating an average for each student in each class of all non-quiz assessments and then averaging those numbers to get a class average. To be clear, each student's average includes only exams and homework grades. Don't include their quiz scores in the calculation.
+
+
+(Test)
+db.grades.aggregate(
+    [
+        {$unwind:"$scores"},
+        {$match:{"scores.type":{$ne:"quiz"}}},
+        {$group:{_id:{class:"$class_id", student:"$student_id"}, student_avg:{$avg:"$scores.score"}}},
+        {$group:{_id:{class_id:"$_id.class"}, class_avg:{$avg:"$student_avg"}}},
+        {$sort:{class_avg:1}},
+        {$limit:1}
+    ]
+)
+
+>{ "_id" : { "class_id" : 2 }, "class_avg" : 37.61742117387635 }
+
+
+
+(Answer)
+db.grades.aggregate(
+    [
+        {$unwind:"$scores"},
+        {$match:{"scores.type":{$ne:"quiz"}}},
+        {$group:{_id:{class:"$class_id", student:"$student_id"}, student_avg:{$avg:"$scores.score"}}},
+        {$group:{_id:{class_id:"$_id.class"}, class_avg:{$avg:"$student_avg"}}},
+        {$sort:{class_avg:-1}},
+        {$limit:1}
+    ]
+)
+
+> { "_id" : { "class_id" : 1 }, "class_avg" : 64.50642324269175 }
+
+
+
+
+#HQ 5.4
+
+Prefered Cities to Live!
+
+In this problem you will calculate the number of people who live in a zip code in the US where the city starts with one of the following characthers:
+
+    B, D, O, G, N or M .
+
+We will take these are the prefered cities to live in (chosen by this instructor, given is special affection to this set of characters!).
+
+You will be using the zip code collection data set, which you will find in the 'handouts' link in this page.
+
+
+> db.zips.findOne()
+{
+    "_id" : "01001",
+    "city" : "AGAWAM",
+    "loc" : [
+        -72.622739,
+        42.070206
+    ],
+    "pop" : 15338,
+    "state" : "MA"
+}
+
+db.zips.aggregate([
+    {$project:
+     {
+        first_char: {$substr : ["$city",0,1]}
+     }
+   }
+])
+
+Using the aggregation framework, calculate the sum total of people who are living in a zip code where the city starts with one of those possible first characters. Choose the answer below.
+
+You will need to probably change your projection to send more info through than just that first character. Also, you will need a filtering step to get rid of all documents where the city does not start with the select set of initial characters.
+
+
+
+(Answer)
+db.zips.aggregate(
+    [
+        {$project: { first_char: {$substr : ["$city",0,1]}, city:1, pop: 1 } },
+        {$match: {first_char:{$in:['B', 'D', 'O', 'G', 'N', 'M']}}},
+        {$group:{_id:null, total_people:{$sum:"$pop"}}}
+    ]
+)
+
+> { "_id" : null, "total_people" : 76394871 }

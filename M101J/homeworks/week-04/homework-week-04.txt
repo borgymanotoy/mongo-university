@@ -1,0 +1,606 @@
+#1 - Quiz (Creating Indexes):
+-----------------------------
+
+Question:
+
+Please provide the mongo shell command to add an index to a collection named students, having the index key be class, student_name.
+
+Neither will go in the "-1" direction..
+
+
+Answer:
+db.students.createIndex({class:1, student_name:1})
+
+
+
+
+
+#2 - Quiz (Dot Notation and Multikey):
+-----------------------------
+
+Question:
+
+Suppose you have a collection called people in the database earth with documents of the following form:
+
+{
+    "_id" : ObjectId("551458821b87e1799edbebc4"),
+    "name" : "Eliot Horowitz",
+    "work_history" : [
+        {
+            "company" : "DoubleClick",
+            "position" : "Software Engineer"
+        },
+        {
+            "company" : "ShopWiki",
+            "position" : "Founder & CTO"
+        },
+        {
+            "company" : "MongoDB",
+            "position" : "Founder & CTO"
+        }
+    ]
+}
+
+Type the command that you would issue in the Mongo shell to create an index on company, descending.
+
+Answer (Command):
+db.people.createIndex({"work_history.company":-1})
+
+
+
+
+#3 - Quiz (Index Creation, Unique):
+-----------------------------
+
+Question:
+
+Please provide the mongo shell command to create a unique index on student_id, class_id, ascending for the collection students.
+
+
+Answer (Command):
+
+db.students.createIndex({student_id:1, class_id:1}, {unique:true})
+
+
+
+
+#4 - Quiz (Geospatial Indexes):
+-----------------------------
+Question:
+Suppose you have a 2D geospatial index defined on the key location in the collection places.
+Write a query that will find the closest three places (the closest three documents) to the location 74, 140.
+
+Answer:
+db.places.find({location:{$near:[74,140]}}).limit(3);
+
+
+
+
+#5 - Quiz (Geospatial Spherical):
+-----------------------------
+Question:
+What is the query that will query a collection named "stores" to return the stores that are within 1,000,000 meters of the location latitude=39, longitude=-130? Type the query in the box below.
+Assume the stores collection has a 2dsphere index on "loc" and please use the "$near" operator.
+Each store record looks like this:
+
+{
+    "_id":{
+        "$oid":"535471aaf28b4d8ee1e1c86f"
+    },
+    "store_id":8,
+    "loc":{
+        "type":"Point",
+        "coordinates":[
+            -37.47891236119904,
+            4.488667018711567
+        ]
+    }
+}
+
+Answer:
+db.stores.find({loc:{$near:{$geometry: {type:"Point",coordinates:[-130,39]},$maxDistance:1000000}}})
+
+
+
+
+#6 - Quiz (Text Indexes):
+-----------------------------
+Question:
+You create a text index on the "title" field of the movies collection, and then perform the following text search:
+
+> db.movies.find( { $text : { $search : "Big Lebowski" } } )
+
+
+Which of the following documents will be returned, assuming they are in the movies collection? Check all that apply.
+
+
+Answer:
+(X) { "title" : "The Big Lebowski" , star: "Jeff Bridges" }
+(X) { "title" : "Big" , star : "Tom Hanks" }
+(X) { "title" : "Big Fish" , star: "Ewan McGregor" }
+
+
+
+
+#7 - Quiz (Efficiency of Index Use):
+-----------------------------
+Question:
+In general, based on the preceding lecture, what is the primary factor that determines how efficiently an index can be used?
+
+|Answer:
+() The number of fields in a compound index
+() Whether we are able to sort using the index
+(X) The selectivity of the index
+
+
+Selectivity is the primary factor that determines how efficiently an index can be used. 
+Ideally, the index enables us to select only those records required to complete the result set, 
+without the need to scan a substantially larger number of index keys (or documents) in order to complete the query. 
+Selectivity determines how many records any subsequent operations must work with. 
+Fewer records means less execution time.
+
+
+
+
+#8 - Quiz (Efficiency of Index Use Example):
+-----------------------------
+Question:
+
+In general, which of the following rules of thumb should you keep in mind when building compound indexes? Check all that apply. 
+For this question, use the following definitions:
+equality field: field on which queries will perform an equality test
+sort field: field on which queries will specify a sort
+range field: field on which queries perform a range test
+
+Answer:
+
+Check all that apply:
+() Sort fields before equality fields
+(X) Equality fields before range fields
+(X) Sort fields before range fields
+(X) Equality fields before sort fields
+() Range fields before equality fields
+
+
+
+
+#9 - Quiz (Profiling):
+-----------------------------
+Question:
+
+Write the query to look in the system profile collection for all queries that took longer than one second, ordered by timestamp descending.
+
+
+Answer:
+db.system.profile.find({millis:{$gt:1000}}).sort({ts:-1})
+
+
+
+
+#10 - Quiz (Mongostat):
+-----------------------------
+Question:
+
+Which of the following statements about mongostat output are true? Check all that apply.
+
+
+Answer:
+() the mmap column field appears for all storage engines.
+(X) The getmore column concerns the number of requests per time interval to get additional data from a cursor
+() only the wiredTiger storage engine reports the resident memory size of the database.
+(X) the faults column appears only in the mmapv1 output
+() by default, mongostat provides information in 100ms increments.
+
+
+
+
+
+
+
+#HW 4.1
+-----------------------------
+Question:
+Suppose you have a collection with the following indexes:
+
+> db.products.getIndexes()
+[
+    {
+        "v" : 1,
+        "key" : {
+            "_id" : 1
+        },
+        "ns" : "store.products",
+        "name" : "_id_"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "sku" : 1
+        },
+                "unique" : true,
+        "ns" : "store.products",
+        "name" : "sku_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "price" : -1
+        },
+        "ns" : "store.products",
+        "name" : "price_-1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "description" : 1
+        },
+        "ns" : "store.products",
+        "name" : "description_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "category" : 1,
+            "brand" : 1
+        },
+        "ns" : "store.products",
+        "name" : "category_1_brand_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "reviews.author" : 1
+        },
+        "ns" : "store.products",
+        "name" : "reviews.author_1"
+    }
+]
+
+Which of the following queries can utilize at least one index to find all matching documents, or to sort? Check all that apply.
+
+Note: the text for some answers may wrap; you can ignore the wrapping.
+
+
+* Populate DB, Collection, Data, etc:
+
+use store;
+db.products.insertMany(
+[
+        {
+            sku: "hotdog-jumbo-purefoods-1kg-123456",
+            description: "Purefoods Jumbo Hotdog (1KG)",
+            category: "Perishable",
+            brand: "Purefoods",
+            price: 186.0,
+            reviews: [
+                {
+                    author: "Joseph Jones Canangga",
+                    email: "jay.canangga@johngoldgroup.com",
+                    comment: "Mas lami ni kung libre"
+                },
+                {
+                    author: "Michael Angelo Mahinay",
+                    email: "mykel.mahinay@johngoldgroup.com",
+                    comment: "Masarap kahit walang sauce."
+                },
+            ]
+        },
+
+        {
+            sku: "baygon-vitamins-insect-killer-534412",
+            description: "Baygon Insect Killer (500g)",
+            category: "Insect Killer",
+            brand: "Baygon",
+            price: 95.0,
+            reviews: [
+                {
+                    author: "Juan Birada",
+                    email: "j_birada@yahoo.com",
+                    comment: "Swabe pang himagas"
+                }
+            ]
+        },
+
+        {
+            sku: "fabric-conditioner-downy-83462",
+            description: "Downy Fabric Conditioner (250ml)",
+            category: "Laundry",
+            brand: "Downy",
+            price: 37.0,
+            reviews: [
+                {
+                    author: "Rowena Matagtiki",
+                    email: "weng_matagtiki@gmail.com",
+                    comment: "Humot pa sa utot."
+                },
+                {
+                    author: "Jessica Bigaon",
+                    email: "jex.b@bigaon.ph",
+                    comment: "Maka adik ang pagka humot"
+                },
+            ]
+        },
+
+        {
+            sku: "magnolia-chicken-thigh",
+            description: "Magnolia Chicken Thigh",
+            category: "Perishable",
+            brand: "Magnolia",
+            price: 200.0,
+            reviews: [
+                {
+                    author: "Mark Watanabe",
+                    email: "mark.watanabe@gmail.com",
+                    comment: "Pan-os naman daan pag palit nako"
+                }
+            ]
+        },
+    ]
+);
+
+db.products.createIndex({_id:1});
+db.products.createIndex({sku:1}, {unique:true});
+db.products.createIndex({price:-1});
+db.products.createIndex({description:1});
+db.products.createIndex({category:1, brand:1});
+db.products.createIndex({"reviews.author":1});
+
+
+Answer:
+() db.products.find( { 'brand' : "GE" } )
+(X) db.products.find( { 'brand' : "GE" } ).sort( { price : 1 } )
+(X) db.products.find( { $and : [ { price : { $gt : 30 } }, { price : { $lt : 50 } } ] } ).sort( { brand : 1 } )
+() db.products.find( { brand : 'GE' } ).sort( { category : 1, brand : -1 } )
+----------
+
+
+#HW 4.2
+-----------------------------
+Question:
+Suppose you have a collection called tweets whose documents contain information about the created_at time of the tweet and the user's followers_count at the time they issued the tweet.
+What can you infer from the following explain output?
+
+
+> db.tweets.explain("executionStats").find( { "user.followers_count" : { $gt : 1000 } } ).limit(10).skip(5000).sort( { created_at : 1 } )
+{
+    "queryPlanner" : {
+        "plannerVersion" : 1,
+        "namespace" : "twitter.tweets",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "user.followers_count" : {
+                "$gt" : 1000
+            }
+        },
+        "winningPlan" : {
+            "stage" : "LIMIT",
+            "limitAmount" : 0,
+            "inputStage" : {
+                "stage" : "SKIP",
+                "skipAmount" : 0,
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "filter" : {
+                        "user.followers_count" : {
+                            "$gt" : 1000
+                        }
+                    },
+                    "inputStage" : {
+                        "stage" : "IXSCAN",
+                        "keyPattern" : {
+                            "created_at" : -1
+                        },
+                        "indexName" : "created_at_-1",
+                        "isMultiKey" : false,
+                        "direction" : "backward",
+                        "indexBounds" : {
+                            "created_at" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "rejectedPlans" : [ ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 10,
+        "executionTimeMillis" : 563,
+        "totalKeysExamined" : 251120,
+        "totalDocsExamined" : 251120,
+        "executionStages" : {
+            "stage" : "LIMIT",
+            "nReturned" : 10,
+            "executionTimeMillisEstimate" : 500,
+            "works" : 251121,
+            "advanced" : 10,
+            "needTime" : 251110,
+            "needFetch" : 0,
+            "saveState" : 1961,
+            "restoreState" : 1961,
+            "isEOF" : 1,
+            "invalidates" : 0,
+            "limitAmount" : 0,
+            "inputStage" : {
+                "stage" : "SKIP",
+                "nReturned" : 10,
+                "executionTimeMillisEstimate" : 500,
+                "works" : 251120,
+                "advanced" : 10,
+                "needTime" : 251110,
+                "needFetch" : 0,
+                "saveState" : 1961,
+                "restoreState" : 1961,
+                "isEOF" : 0,
+                "invalidates" : 0,
+                "skipAmount" : 0,
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "filter" : {
+                        "user.followers_count" : {
+                            "$gt" : 1000
+                        }
+                    },
+                    "nReturned" : 5010,
+                    "executionTimeMillisEstimate" : 490,
+                    "works" : 251120,
+                    "advanced" : 5010,
+                    "needTime" : 246110,
+                    "needFetch" : 0,
+                    "saveState" : 1961,
+                    "restoreState" : 1961,
+                    "isEOF" : 0,
+                    "invalidates" : 0,
+                    "docsExamined" : 251120,
+                    "alreadyHasObj" : 0,
+                    "inputStage" : {
+                        "stage" : "IXSCAN",
+                        "nReturned" : 251120,
+                        "executionTimeMillisEstimate" : 100,
+                        "works" : 251120,
+                        "advanced" : 251120,
+                        "needTime" : 0,
+                        "needFetch" : 0,
+                        "saveState" : 1961,
+                        "restoreState" : 1961,
+                        "isEOF" : 0,
+                        "invalidates" : 0,
+                        "keyPattern" : {
+                            "created_at" : -1
+                        },
+                        "indexName" : "created_at_-1",
+                        "isMultiKey" : false,
+                        "direction" : "backward",
+                        "indexBounds" : {
+                            "created_at" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        },
+                        "keysExamined" : 251120,
+                        "dupsTested" : 0,
+                        "dupsDropped" : 0,
+                        "seenInvalidated" : 0,
+                        "matchTested" : 0
+                    }
+                }
+            }
+        }
+    },
+    "serverInfo" : {
+        "host" : "generic-name.local",
+        "port" : 27017,
+        "version" : "3.0.1",
+        "gitVersion" : "534b5a3f9d10f00cd27737fbcd951032248b5952"
+    },
+    "ok" : 1
+}
+
+
+Answer:
+
+(X) The query uses an index to determine the order in which to return result documents.
+() The query uses an index to determine which documents match.
+() The query returns 251120 documents.
+(X) The query examines 251120 documents.
+() The query is a covered query.
+-----------------------------
+
+
+
+#HW 4.3 (MongoProc)
+-----------------------------
+Question:
+
+Making the Blog fast
+
+Please download hw4-3.zip from the Download Handout link to get started. This assignment requires MongoDB 2.2 or above.
+
+In this homework assignment you will be adding some indexes to the post collection to make the blog fast.
+
+We have provided the full code for the blog application and you don't need to make any changes, or even run the blog. But you can, for fun.
+
+We are also providing a patriotic (if you are an American) data set for the blog. There are 1000 entries with lots of comments and tags. You must load this dataset to complete the problem.
+
+
+// from the mongo shell
+use blog;
+db.posts.drop();
+
+
+    # from the terminal window mongoimport --drop -d blog -c posts posts.json
+
+The blog has been enhanced so that it can also display the top 10 most recent posts by tag. There are hyperlinks from the post tags to the page that displays the 10 most recent blog entries for that tag. (run the blog and it will be obvious)
+
+Your assignment is to make the following blog pages fast:
+
+    The blog home page
+    The page that displays blog posts by tag (http://localhost:8082/tag/whatever)
+    The page that displays a blog entry by permalink (http://localhost:8082/post/permalink)
+
+By fast, we mean that indexes should be in place to satisfy these queries such that we only need to scan the number of documents we are going to return.
+
+To figure out what queries you need to optimize, you can read the code and see what it does to display those pages. Isolate those queries and use explain to explore.
+
+When you believe you have solved the problem correctly, test your solution in MongoProc. When you see confirmation that your solution is correct, turn it in.
+
+You will see a message below about the number of times you have submitted a solution through MongoProc. You should not submit until testing in MongoProc confirms that your solution is correct.
+
+Tip: Be sure to go to settings in mongoProc, and point mongod1 to your mongod (probably localhost:27017), and web1 to your web url (probably localhost:8082)
+
+
+Commands:
+Explain each find first.
+
+var exp = db.posts.explain("executionStats");
+exp.find().sort({date:-1});
+exp.find({tags:"quartz"}).sort({date:-1}).limit(10);
+exp.findOne({permalink:"permalink_here"});
+
+
+1. db.posts.createIndex({date:-1});
+2. db.posts.createIndex({tags:1});
+3. db.posts.createIndex({permalink:1},{unique:true});
+
+rerun explain with executionStats and see the improvements.
+-----------------------------
+
+
+
+
+
+#HW 4.4
+-----------------------------
+Question:
+
+In this problem you will analyze a profile log taken from a different mongoDB instance and you will import it into a collection named sysprofile.
+To start, please download sysprofile.json from Download Handout link and import it with the following command:
+
+mongoimport --drop -d m101 -c sysprofile sysprofile.json
+
+Now query the profile data, looking for all queries to the students collection in the database school2, sorted in order of decreasing latency.
+What is the latency of the longest running operation to the collection, in milliseconds?
+
+
+Answer:
+
+() 19776550
+() 10000000
+() 5580001
+(X) 15820
+() 2350
+
+Answer command:
+
+db.sysprofile.find({ op:"query", ns:/school2.students/}).sort({ millis: -1}).limit( 1).pretty()
+
+Explanation:
+Operation = query
+Database = school2
+Collection = students
+Sort = millis (decreasing)
+Limit = 1 (Get longeset running operation)
+-----------------------------
+
+

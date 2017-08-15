@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>M101JS: Homework 1.4</title>
+        <style type="text/css">
+            body { font-family: "Courier New", Georgia, Serif; }
+            div.divContainer {
+                border: 1px solid #ccc;
+                width: 400px;
+                padding: 20px 0px 20px 50px;
+            }
+            p > label {
+                display: inline-block; width: 100px;
+                font-weight: bold;
+            }
+            p > input[type='text'] {
+                font-family: "Courier New", Georgia, Serif;
+                width: 200px;
+                padding: 5px;
+            }
+            input[type=submit] {
+                font-family: "Courier New", Georgia, Serif;
+                font-weight: bolder;
+                padding: 5px 20px;
+            }
+            span.status {
+                font-family: "Courier New", Georgia, Serif;
+                font-style: italic;
+                font-size: 0.65em;
+                padding: 5px;
+                border: 1px solid #ddd;
+                background-color: #eee;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="divContainer">
+
+            {% if message %}
+                <span class="status">{{message}}</span>
+            {% endif %}
+
+
+            <form action="/register_movie" method="POST">
+                <p>
+                    <label for="txtTitle">Title:</label>
+                    <input type="text" id="txtTitle" name="title" value="" />
+                </p>
+                <p>
+                    <label for="txtYear">Year:</label>
+                    <input type="text" id="txtYear" name="year" value="" />
+                </p>
+                <p>
+                    <label for="txtImdb">IMDB:</label>
+                    <input type="text" id="txtImdb" name="imdb" value="" />
+                </p>
+                <br />
+                <p>
+                    <input type="submit" value="Submit" />
+                </p>
+            </form>
+        </div>
+
+    </body>
+</html>
